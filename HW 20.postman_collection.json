@@ -1,0 +1,149 @@
+{
+	"info": {
+		"_postman_id": "a1c50125-bdb1-40ec-9c64-5b27e86735cc",
+		"name": "HW 20",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "25253788",
+		"_collection_link": "https://warped-zodiac-502190.postman.co/workspace/Courses-qa~c049c873-e86d-415b-afb7-80d097863e8b/collection/25253788-a1c50125-bdb1-40ec-9c64-5b27e86735cc?action=share&source=collection_link&creator=25253788"
+	},
+	"item": [
+		{
+			"name": "All request",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const expectedStatus = parseInt(pm.environment.get(\"expectedStatus\"));\r",
+							"const expectedMessage = pm.environment.get(\"expectedMessage\");\r",
+							"\r",
+							"\r",
+							"pm.test(\"HTTP Status Code is as expected\", function () {\r",
+							"    pm.response.to.have.status(expectedStatus);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test('Response status field is \"error\"', function () {\r",
+							"    const json = pm.response.json();\r",
+							"    pm.expect(json.status).to.eql(\"error\");\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Response message matches expected\", function () {\r",
+							"    const json = pm.response.json();\r",
+							"    pm.expect(json.message).to.eql(expectedMessage);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"const index = parseInt(pm.environment.get(\"caseIndex\"));\r",
+							"const total = 8; \r",
+							"\r",
+							"if (index < total) {\r",
+							"    postman.setNextRequest(pm.info.requestName);\r",
+							"} else {\r",
+							"    pm.environment.unset(\"caseIndex\");\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"const testCases = [\r",
+							"    { name: \"\", expectedStatus: 400, message: \"\\\"name\\\" is not allowed to be empty\" },\r",
+							"    { name: \"Тестлайн\", expectedStatus: 400, message: \"Name is invalid\" },\r",
+							"    { name: \"test-line\", expectedStatus: 400, message: \"Name is invalid\" },\r",
+							"    { name: \"Name4)\", expectedStatus: 400, message: \"Name is invalid\" },\r",
+							"    { name: \"T\", expectedStatus: 400, message: \"Name has to be from 2 to 20 characters long\"},\r",
+							"    { name: \"TESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTEST\", expectedStatus: 400, message: \"Name has to be from 2 to 20 characters long\"},\r",
+							"    { name: null, expectedStatus: 400, message: \"Name is invalid\"},\r",
+							"    {  expectedStatus: 400, message: \"Name is required\" }\r",
+							"];\r",
+							"\r",
+							"let index = parseInt(pm.environment.get(\"caseIndex\") || 0);\r",
+							"\r",
+							"if (index < testCases.length) {\r",
+							"    const currentCase = testCases[index];\r",
+							"    const baseBody = {\r",
+							"        lastName: \"Dou\",\r",
+							"        email: \"test@test.com\",\r",
+							"        password: \"Qwerty12345\",\r",
+							"        repeatPassword: \"Qwerty12345\"\r",
+							"    };\r",
+							"\r",
+							"    \r",
+							"    if (currentCase.hasOwnProperty(\"name\")) {\r",
+							"        baseBody.name = currentCase.name;\r",
+							"    }\r",
+							"\r",
+							"  \r",
+							"    pm.environment.set(\"requestBody\", JSON.stringify(baseBody));\r",
+							"    pm.environment.set(\"expectedStatus\", currentCase.expectedStatus);\r",
+							"    pm.environment.set(\"expectedMessage\", currentCase.message);\r",
+							"    pm.environment.set(\"caseIndex\", index + 1);\r",
+							"} "
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{{requestBody}}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{BaseURL}}/auth/signup",
+					"host": [
+						"{{BaseURL}}"
+					],
+					"path": [
+						"auth",
+						"signup"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "BaseURL",
+			"value": "https://qauto2.forstudy.space/api",
+			"type": "string"
+		}
+	]
+}
